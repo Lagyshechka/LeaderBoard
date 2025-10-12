@@ -8,6 +8,7 @@
         private System.Windows.Forms.TextBox groupTextBox;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button addGradeColumnButton;
+        private System.Windows.Forms.Button deleteButton;
 
         protected override void Dispose(bool disposing)
         {
@@ -25,6 +26,7 @@
             this.groupTextBox = new System.Windows.Forms.TextBox();
             this.addButton = new System.Windows.Forms.Button();
             this.addGradeColumnButton = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             
@@ -50,6 +52,11 @@
             this.addGradeColumnButton.Text = "Add Grade Column";
             this.addGradeColumnButton.Click += new System.EventHandler(this.addGradeColumnButton_Click);
             
+            this.deleteButton.Location = new System.Drawing.Point(520, 10);
+            this.deleteButton.Size = new System.Drawing.Size(100, 25);
+            this.deleteButton.Text = "Delete Selected";
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            
             this.ClientSize = new System.Drawing.Size(900, 600);
             this.Text = "Student Leaderboard";
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -58,9 +65,11 @@
             this.Controls.Add(this.groupTextBox);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.addGradeColumnButton);
+            this.Controls.Add(this.deleteButton);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+            
         }
     }
 }
