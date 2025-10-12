@@ -1,39 +1,66 @@
-﻿namespace LeaderBoard;
-
-partial class Form1
+﻿namespace LeaderBoard
 {
-    /// <summary>
-    ///  Required designer variable.
-    /// </summary>
-    private System.ComponentModel.IContainer components = null;
-
-    /// <summary>
-    ///  Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
+    partial class Form1
     {
-        if (disposing && (components != null))
+        private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.TextBox nameTextBox;
+        private System.Windows.Forms.TextBox groupTextBox;
+        private System.Windows.Forms.Button addButton;
+        private System.Windows.Forms.Button addGradeColumnButton;
+
+        protected override void Dispose(bool disposing)
         {
-            components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
-        base.Dispose(disposing);
+        private void InitializeComponent()
+        {
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.nameTextBox = new System.Windows.Forms.TextBox();
+            this.groupTextBox = new System.Windows.Forms.TextBox();
+            this.addButton = new System.Windows.Forms.Button();
+            this.addGradeColumnButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.SuspendLayout();
+            
+            this.dataGridView.Location = new System.Drawing.Point(10, 60);
+            this.dataGridView.Size = new System.Drawing.Size(860, 480);
+            this.dataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            
+            this.nameTextBox.Location = new System.Drawing.Point(10, 10);
+            this.nameTextBox.Size = new System.Drawing.Size(150, 20);
+            this.nameTextBox.Text = "";
+            
+            this.groupTextBox.Location = new System.Drawing.Point(170, 10);
+            this.groupTextBox.Size = new System.Drawing.Size(100, 20);
+            this.groupTextBox.Text = "";
+            
+            this.addButton.Location = new System.Drawing.Point(280, 10);
+            this.addButton.Size = new System.Drawing.Size(100, 25);
+            this.addButton.Text = "Add Student";
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            
+            this.addGradeColumnButton.Location = new System.Drawing.Point(390, 10);
+            this.addGradeColumnButton.Size = new System.Drawing.Size(120, 25);
+            this.addGradeColumnButton.Text = "Add Grade Column";
+            this.addGradeColumnButton.Click += new System.EventHandler(this.addGradeColumnButton_Click);
+            
+            this.ClientSize = new System.Drawing.Size(900, 600);
+            this.Text = "Student Leaderboard";
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Controls.Add(this.dataGridView);
+            this.Controls.Add(this.nameTextBox);
+            this.Controls.Add(this.groupTextBox);
+            this.Controls.Add(this.addButton);
+            this.Controls.Add(this.addGradeColumnButton);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
     }
-
-    #region Windows Form Designer generated code
-
-    /// <summary>
-    ///  Required method for Designer support - do not modify
-    ///  the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
-    }
-
-    #endregion
 }
