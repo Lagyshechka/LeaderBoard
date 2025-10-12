@@ -9,6 +9,7 @@
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button addGradeColumnButton;
         private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.Button renameColumnsButton;
 
         protected override void Dispose(bool disposing)
         {
@@ -21,55 +22,78 @@
 
         private void InitializeComponent()
         {
-            this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.nameTextBox = new System.Windows.Forms.TextBox();
-            this.groupTextBox = new System.Windows.Forms.TextBox();
-            this.addButton = new System.Windows.Forms.Button();
-            this.addGradeColumnButton = new System.Windows.Forms.Button();
-            this.deleteButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             
-            this.dataGridView.Location = new System.Drawing.Point(10, 60);
-            this.dataGridView.Size = new System.Drawing.Size(860, 480);
-            this.dataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            // dataGridView
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.dataGridView.Location = new System.Drawing.Point(12, 50);
+            this.dataGridView.Size = new System.Drawing.Size(960, 520);
+            this.dataGridView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | 
+                                     System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             
-            this.nameTextBox.Location = new System.Drawing.Point(10, 10);
-            this.nameTextBox.Size = new System.Drawing.Size(150, 20);
-            this.nameTextBox.Text = "";
+            // nameTextBox
+            this.nameTextBox = new System.Windows.Forms.TextBox();
+            this.nameTextBox.Location = new System.Drawing.Point(12, 12);
+            this.nameTextBox.Size = new System.Drawing.Size(150, 23);
+            this.nameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             
-            this.groupTextBox.Location = new System.Drawing.Point(170, 10);
-            this.groupTextBox.Size = new System.Drawing.Size(100, 20);
-            this.groupTextBox.Text = "";
+            // groupTextBox
+            this.groupTextBox = new System.Windows.Forms.TextBox();
+            this.groupTextBox.Location = new System.Drawing.Point(168, 12);
+            this.groupTextBox.Size = new System.Drawing.Size(100, 23);
+            this.groupTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             
-            this.addButton.Location = new System.Drawing.Point(280, 10);
+            // addButton
+            this.addButton = new System.Windows.Forms.Button();
+            this.addButton.Location = new System.Drawing.Point(274, 12);
             this.addButton.Size = new System.Drawing.Size(100, 25);
             this.addButton.Text = "Add Student";
+            this.addButton.UseVisualStyleBackColor = false;
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             
-            this.addGradeColumnButton.Location = new System.Drawing.Point(390, 10);
+            // addGradeColumnButton
+            this.addGradeColumnButton = new System.Windows.Forms.Button();
+            this.addGradeColumnButton.Location = new System.Drawing.Point(380, 12);
             this.addGradeColumnButton.Size = new System.Drawing.Size(120, 25);
             this.addGradeColumnButton.Text = "Add Grade Column";
+            this.addGradeColumnButton.UseVisualStyleBackColor = false;
             this.addGradeColumnButton.Click += new System.EventHandler(this.addGradeColumnButton_Click);
             
-            this.deleteButton.Location = new System.Drawing.Point(520, 10);
+            // deleteButton
+            this.deleteButton = new System.Windows.Forms.Button();
+            this.deleteButton.Location = new System.Drawing.Point(506, 12);
             this.deleteButton.Size = new System.Drawing.Size(100, 25);
             this.deleteButton.Text = "Delete Selected";
+            this.deleteButton.UseVisualStyleBackColor = false;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             
-            this.ClientSize = new System.Drawing.Size(900, 600);
+            // renameColumnsButton
+            this.renameColumnsButton = new System.Windows.Forms.Button();
+            this.renameColumnsButton.Location = new System.Drawing.Point(612, 12);
+            this.renameColumnsButton.Size = new System.Drawing.Size(120, 25);
+            this.renameColumnsButton.Text = "Rename Columns";
+            this.renameColumnsButton.UseVisualStyleBackColor = false;
+            this.renameColumnsButton.Click += new System.EventHandler(this.renameColumnsButton_Click);
+            
+            // Form1
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None; // Важно: отключаем авто-масштабирование
+            this.ClientSize = new System.Drawing.Size(984, 582);
             this.Text = "Student Leaderboard";
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.groupTextBox);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.addGradeColumnButton);
             this.Controls.Add(this.deleteButton);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.Controls.Add(this.renameColumnsButton);
+            
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-            
         }
     }
 }
