@@ -14,14 +14,55 @@ namespace LeaderBoard
         private System.Windows.Forms.Timer updateTimer;
         private const string PhantomStudentName = "+";
 
+        private Color PrimaryColor = Color.FromArgb(40, 128, 185);
+        private Color SecondaryColor = Color.FromArgb(50, 150, 220);
+        private Color AccentColor = Color.FromArgb(45, 200, 110);
+        private Color DangerColor = Color.FromArgb(230, 75, 60);
+        private Color DarkColor = Color.FromArgb(45, 60, 80);
+        private Color LightColor = Color.FromArgb(230, 240, 240);
+
         public Form1()
         {
             InitializeComponent();
             dataFilePath = Path.Combine(Application.StartupPath, "students_data.json");
+            ApplyStyling();
             SetupUpdateTimer();
             SetupDataGridView();
             LoadData();
             AddPhantomStudent();
+        }
+
+        private void ApplyStyling()
+        {
+            this.BackColor = Color.White;
+            this.ForeColor = DarkColor;
+            this.Font = new Font("Segoe UI", 9);
+
+            var buttons = new[] { addButton, addGradeColumnButton, deleteButton };
+            foreach (var button in buttons)
+            {
+                button.FlatStyle = FlatStyle.Flat;
+                button.FlatAppearance.BorderSize = 0;
+                button.BackColor = PrimaryColor;
+                button.ForeColor = Color.White;
+                button.Font = new Font("Segoe UI", 9,  FontStyle.Bold);
+                button.Size = new Size(120, 32);
+                button.Cursor = Cursors.Hand;
+            }
+
+            addButton.BackColor = AccentColor;
+            deleteButton.BackColor = DangerColor;
+
+            var textBoxes = new[] { nameTextBox, groupTextBox };
+            foreach (var textBox in textBoxes)
+            {
+                textBox.BorderStyle = BorderStyle.FixedSingle;
+                textBox.BackColor = Color.White;
+                textBox.ForeColor = DarkColor;
+                textBox.Font = new Font("Segoe UI", 9);
+            }
+
+            this.Text = "Student Leaderboard";
         }
 
         private void SetupUpdateTimer()
@@ -41,6 +82,31 @@ namespace LeaderBoard
         private void SetupDataGridView()
         {
             dataGridView.Columns.Clear();
+
+            dataGridView.BorderStyle = BorderStyle.None;
+            dataGridView.BackgroundColor = LightColor;
+            dataGridView.GridColor = Color.FromArgb(200, 200, 200);
+
+            dataGridView.EnableHeadersVisualStyles = false;
+            dataGridView.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
+            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            dataGridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridView.ColumnHeadersHeight = 35;
+
+            dataGridView.DefaultCellStyle.BackColor = Color.White;
+            dataGridView.DefaultCellStyle.ForeColor = DarkColor;
+            dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 9);
+            dataGridView.DefaultCellStyle.SelectionBackColor = SecondaryColor;
+            dataGridView.DefaultCellStyle.SelectionForeColor = Color.White;
+            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
+
+            dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToResizeRows = false;
+            dataGridView.RowHeadersVisible = false;
+            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView.MultiSelect = false;
             
             dataGridView.Columns.Add("Name", "Student Name");
             dataGridView.Columns.Add("Group", "Group");
@@ -56,12 +122,12 @@ namespace LeaderBoard
             dataGridView.Columns["Group"].Width = 100;
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
-                if (column.Name.StartsWith("Grade"))
-                    column.Width = 70;
+                if (column.Name.StartsWith("Grade") || column.Name.StartsWith("Total"))
+                    column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             dataGridView.Columns["Total"].Width = 70;
             
-            dataGridView.AllowUserToAddRows = false;
+            
             dataGridView.CellEndEdit += DataGridView_CellEndEdit;
             dataGridView.CellClick += DataGridView_CellClick;
         }
@@ -82,7 +148,10 @@ namespace LeaderBoard
             row.Cells[dataGridView.Columns.Count - 1].Value = "";
             
             row.DefaultCellStyle.ForeColor = Color.Gray;
-            row.DefaultCellStyle.Font = new Font(dataGridView.Font, FontStyle.Italic);
+            row.DefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            row.DefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
+            row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 200, 200);
+            row.DefaultCellStyle.SelectionForeColor = Color.Gray;
         }
 
         private void MaintainPhantomStudent()
@@ -115,36 +184,36 @@ namespace LeaderBoard
             {
                 DataGridViewRow clickedRow = dataGridView.Rows[e.RowIndex];
                 
-                if (clickedRow.Cells["Name"].Value?.ToString() == PhantomStudentName)
+                if (clickedRow.Cells["Name"].Value?.ToString() == PhantomStudentName && e.ColumnIndex == 0)
                 {
-                    if (e.ColumnIndex == 0)
-                    {
-                        AddNewStudentFromPhantom();
-                    }
+                    AddNewStudentFromPhantom();
                 }
             }
         }
 
         private void AddNewStudentFromPhantom()
         {
-            int phantomRowIndex = dataGridView.Rows.Count - 1;
-            
             using (var dialog = new AddStudentDialog())
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    DataGridViewRow newRow = dataGridView.Rows[phantomRowIndex];
-                    
-                    newRow.Cells["Name"].Value = dialog.StudentName;
-                    newRow.Cells["Group"].Value = dialog.GroupName;
-                    
-                    for (int i = 2; i < dataGridView.Columns.Count - 1; i++)
+                    foreach (DataGridViewRow row in dataGridView.Rows)
                     {
-                        newRow.Cells[i].Value = 0;
+                        if (row.Cells["Name"].Value?.ToString() == PhantomStudentName)
+                        {
+                            row.Cells["Name"].Value = dialog.StudentName;
+                            row.Cells["Group"].Value = dialog.GroupName;
+                            
+                            for (int i = 2; i < dataGridView.Columns.Count - 1; i++)
+                            {
+                                row.Cells[i].Value = 0;
+                            }
+                            
+                            row.DefaultCellStyle = dataGridView.DefaultCellStyle;
+                            
+                            break;
+                        }
                     }
-                    
-                    newRow.DefaultCellStyle.ForeColor = dataGridView.DefaultCellStyle.ForeColor;
-                    newRow.DefaultCellStyle.Font = dataGridView.DefaultCellStyle.Font;
                     
                     AddPhantomStudent();
                     SaveData();
@@ -154,19 +223,7 @@ namespace LeaderBoard
 
         private void DataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
-            {
-                DataGridViewRow row = dataGridView.Rows[e.RowIndex];
-                
-                if (row.Cells["Name"].Value?.ToString() == PhantomStudentName && e.ColumnIndex == 0)
-                {
-                    AddNewStudentFromPhantom();
-                }
-                else
-                {
-                    SaveData();
-                }
-            }
+            SaveData();
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -204,7 +261,13 @@ namespace LeaderBoard
             {
                 Name = newColumnName,
                 HeaderText = $"Grade {gradeColumnCount + 1}",
-                Width = 70
+                Width = 80,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    BackColor = Color.White,
+                    ForeColor = DarkColor
+                }
             };
             
             dataGridView.Columns.Insert(dataGridView.Columns.Count - 1, newColumn);
@@ -229,14 +292,20 @@ namespace LeaderBoard
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                foreach (DataGridViewRow row in dataGridView.SelectedRows)
+                var result = MessageBox.Show("Delete selected students?", "Confirmation", 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                
+                if (result == DialogResult.Yes)
                 {
-                    if (!row.IsNewRow && row.Cells["Name"].Value?.ToString() != PhantomStudentName)
+                    foreach (DataGridViewRow row in dataGridView.SelectedRows)
                     {
-                        dataGridView.Rows.Remove(row);
+                        if (!row.IsNewRow && row.Cells["Name"].Value?.ToString() != PhantomStudentName)
+                        {
+                            dataGridView.Rows.Remove(row);
+                        }
                     }
+                    SaveData();
                 }
-                SaveData();
             }
         }
 
@@ -268,7 +337,7 @@ namespace LeaderBoard
                 RecalculateTotalForRow(i);
             }
         }
-
+        
         private void SaveData()
         {
             try
@@ -313,7 +382,8 @@ namespace LeaderBoard
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving data: {ex.Message}");
+                MessageBox.Show($"Error saving data: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -331,28 +401,7 @@ namespace LeaderBoard
                 dataGridView.Rows.Clear();
                 dataGridView.Columns.Clear();
                 
-                dataGridView.Columns.Add("Name", "Student Name");
-                dataGridView.Columns.Add("Group", "Group");
-                
-                for (int i = 1; i <= data.GradeColumnsCount; i++)
-                {
-                    dataGridView.Columns.Add($"Grade{i}", $"Grade {i}");
-                }
-                
-                dataGridView.Columns.Add("Total", "Total");
-                
-                dataGridView.Columns["Name"].Width = 150;
-                dataGridView.Columns["Group"].Width = 100;
-                foreach (DataGridViewColumn column in dataGridView.Columns)
-                {
-                    if (column.Name.StartsWith("Grade"))
-                        column.Width = 70;
-                }
-                dataGridView.Columns["Total"].Width = 70;
-                
-                dataGridView.AllowUserToAddRows = false;
-                dataGridView.CellEndEdit += DataGridView_CellEndEdit;
-                dataGridView.CellClick += DataGridView_CellClick;
+                SetupDataGridView(); 
                 
                 foreach (var student in data.Students)
                 {
@@ -369,7 +418,8 @@ namespace LeaderBoard
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading data: {ex.Message}");
+                MessageBox.Show($"Error loading data: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
