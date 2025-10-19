@@ -24,27 +24,23 @@
         {
             this.SuspendLayout();
             
-            // dataGridView
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridView.Location = new System.Drawing.Point(12, 50);
             this.dataGridView.Size = new System.Drawing.Size(960, 520);
             this.dataGridView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | 
-                                     System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+                                      System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             
-            // nameTextBox
             this.nameTextBox = new System.Windows.Forms.TextBox();
             this.nameTextBox.Location = new System.Drawing.Point(12, 12);
             this.nameTextBox.Size = new System.Drawing.Size(150, 23);
             this.nameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             
-            // groupTextBox
             this.groupTextBox = new System.Windows.Forms.TextBox();
             this.groupTextBox.Location = new System.Drawing.Point(168, 12);
             this.groupTextBox.Size = new System.Drawing.Size(100, 23);
             this.groupTextBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             
-            // addButton
             this.addButton = new System.Windows.Forms.Button();
             this.addButton.Location = new System.Drawing.Point(274, 12);
             this.addButton.Size = new System.Drawing.Size(100, 25);
@@ -52,7 +48,6 @@
             this.addButton.UseVisualStyleBackColor = false;
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             
-            // addGradeColumnButton
             this.addGradeColumnButton = new System.Windows.Forms.Button();
             this.addGradeColumnButton.Location = new System.Drawing.Point(380, 12);
             this.addGradeColumnButton.Size = new System.Drawing.Size(120, 25);
@@ -60,7 +55,6 @@
             this.addGradeColumnButton.UseVisualStyleBackColor = false;
             this.addGradeColumnButton.Click += new System.EventHandler(this.addGradeColumnButton_Click);
             
-            // deleteButton
             this.deleteButton = new System.Windows.Forms.Button();
             this.deleteButton.Location = new System.Drawing.Point(506, 12);
             this.deleteButton.Size = new System.Drawing.Size(100, 25);
@@ -68,7 +62,6 @@
             this.deleteButton.UseVisualStyleBackColor = false;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             
-            // renameColumnsButton
             this.renameColumnsButton = new System.Windows.Forms.Button();
             this.renameColumnsButton.Location = new System.Drawing.Point(612, 12);
             this.renameColumnsButton.Size = new System.Drawing.Size(120, 25);
@@ -76,8 +69,7 @@
             this.renameColumnsButton.UseVisualStyleBackColor = false;
             this.renameColumnsButton.Click += new System.EventHandler(this.renameColumnsButton_Click);
             
-            // Form1
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None; // Важно: отключаем авто-масштабирование
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(984, 582);
             this.Text = "Student Leaderboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

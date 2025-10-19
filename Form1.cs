@@ -40,20 +40,27 @@ namespace LeaderBoard
             dataFilePath = Path.Combine(Application.StartupPath, "students_data.json");
             ApplyModernStyling();
             SetupDataGridView();
+            SubscribeToGridEvents();
             LoadData();
             AddPhantomStudent();
         }
 
+        private void SubscribeToGridEvents()
+        {
+            dataGridView.CellPainting += DataGridView_CellPainting;
+            dataGridView.CellEndEdit += DataGridView_CellEndEdit;
+            dataGridView.CellClick += DataGridView_CellClick;
+            dataGridView.CellValueChanged += DataGridView_CellValueChanged;
+        }
+
         private void ApplyModernStyling()
         {
-            // Отключаем автоматическое масштабирование
             this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = Color.White;
             this.ForeColor = DarkColor;
             this.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             this.Size = new Size(1000, 600);
-
-            // Убедимся, что все элементы используют одинаковый шрифт
+            
             var controls = new Control[] { 
                 addButton, addGradeColumnButton, deleteButton, renameColumnsButton,
                 nameTextBox, groupTextBox, dataGridView 
@@ -115,7 +122,6 @@ namespace LeaderBoard
             dataGridView.Columns.Add("Name", "👤 Student Name");
             dataGridView.Columns.Add("Group", "🏫 Group");
     
-            // Создаем 3 колонки оценок по умолчанию
             for (int i = 1; i <= 3; i++)
             {
                 dataGridView.Columns.Add($"Grade{i}", $"Grade {i}");
@@ -226,7 +232,7 @@ namespace LeaderBoard
             int count = 0;
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
-                if (column.Name.StartsWith("Grade"))
+                if (column.Name.StartsWith("Grade") && column.Name != "Grade")
                     count++;
             }
             return count;
@@ -260,7 +266,6 @@ namespace LeaderBoard
                     
                             int gradeColumnsCount = GetGradeColumnsCount();
                     
-                            // Правильно инициализируем оценки по именам колонок
                             for (int i = 0; i < gradeColumnsCount; i++)
                             {
                                 string columnName = $"Grade{i + 1}";
@@ -313,7 +318,6 @@ namespace LeaderBoard
     
             int gradeColumnsCount = GetGradeColumnsCount();
     
-            // Правильно инициализируем оценки по именам колонок
             for (int i = 0; i < gradeColumnsCount; i++)
             {
                 string columnName = $"Grade{i + 1}";
@@ -342,11 +346,9 @@ namespace LeaderBoard
                 }
             };
     
-            // Вставляем перед колонкой "Total"
             int insertIndex = dataGridView.Columns.Count - 3;
             dataGridView.Columns.Insert(insertIndex, newColumn);
     
-            // Обновляем все строки
             foreach (DataGridViewRow gridRow in dataGridView.Rows)
             {
                 if (gridRow.IsNewRow) continue;
@@ -405,13 +407,20 @@ namespace LeaderBoard
         
                 if (result == DialogResult.Yes)
                 {
+                    var rowsToDelete = new List<DataGridViewRow>();
                     foreach (DataGridViewRow selectedRow in dataGridView.SelectedRows)
                     {
                         if (!selectedRow.IsNewRow && selectedRow.Cells["Name"].Value?.ToString() != PhantomStudentName)
                         {
-                            dataGridView.Rows.Remove(selectedRow);
+                            rowsToDelete.Add(selectedRow);
                         }
                     }
+                    
+                    foreach(var row in rowsToDelete)
+                    {
+                        dataGridView.Rows.Remove(row);
+                    }
+                    
                     SaveData();
                 }
             }
@@ -428,7 +437,6 @@ namespace LeaderBoard
             int total = 0;
             int gradeColumnsCount = GetGradeColumnsCount();
     
-            // Правильно рассчитываем индексы колонок с оценками
             for (int i = 0; i < gradeColumnsCount; i++)
             {
                 string columnName = $"Grade{i + 1}";
@@ -523,7 +531,6 @@ namespace LeaderBoard
                     students.Add(student);
                 }
 
-                // Сохраняем названия колонок
                 var gradeColumnNames = new string[GetGradeColumnsCount()];
                 for (int i = 0; i < gradeColumnNames.Length; i++)
                 {
@@ -549,7 +556,7 @@ namespace LeaderBoard
         }
 
         private void LoadData()
-        {       
+        {            
             try
             {
                 if (!File.Exists(dataFilePath)) return;
@@ -559,15 +566,12 @@ namespace LeaderBoard
                 
                 if (data == null) return;
                 
-                // Очищаем текущие данные
                 dataGridView.Rows.Clear();
                 dataGridView.Columns.Clear();
                 
-                // Создаем базовые колонки
                 dataGridView.Columns.Add("Name", "👤 Student Name");
                 dataGridView.Columns.Add("Group", "🏫 Group");
                 
-                // Создаем колонки оценок на основе сохраненных данных
                 for (int i = 1; i <= data.GradeColumnsCount; i++)
                 {
                     string columnName = $"Grade{i}";
@@ -578,15 +582,12 @@ namespace LeaderBoard
                     dataGridView.Columns.Add(columnName, headerText);
                 }
                 
-                // Добавляем системные колонки
                 dataGridView.Columns.Add("Total", "📊 Total");
                 dataGridView.Columns.Add("Progress", "📈 Progress");
                 dataGridView.Columns.Add("Grade", "🎓 Grade");
                 
-                // Применяем стили к DataGridView
                 ApplyDataGridViewStyling();
                 
-                // Загружаем студентов
                 foreach (var student in data.Students)
                 {
                     int rowIndex = dataGridView.Rows.Add();
@@ -595,7 +596,6 @@ namespace LeaderBoard
                     newRow.Cells["Name"].Value = student.Name;
                     newRow.Cells["Group"].Value = student.Group;
                     
-                    // Загружаем оценки
                     for (int i = 0; i < student.Grades.Count && i < data.GradeColumnsCount; i++)
                     {
                         string columnName = $"Grade{i + 1}";
@@ -603,9 +603,7 @@ namespace LeaderBoard
                     }
                 }
                 
-                // Пересчитываем итоги для всех строк
                 RecalculateAllTotals();
-                AddPhantomStudent();
             }
             catch (Exception ex)
             {
@@ -638,14 +636,13 @@ namespace LeaderBoard
             dataGridView.AllowUserToResizeRows = false;
             dataGridView.RowHeadersVisible = false;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.MultiSelect = false;
+            dataGridView.MultiSelect = true;
 
-            // Устанавливаем ширины колонок
             dataGridView.Columns["Name"].Width = 180;
             dataGridView.Columns["Group"].Width = 120;
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
-                if (column.Name.StartsWith("Grade"))
+                if (column.Name.StartsWith("Grade") && column.Name != "Grade")
                     column.Width = 80;
             }
             dataGridView.Columns["Total"].Width = 80;
@@ -659,17 +656,9 @@ namespace LeaderBoard
                     column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
-
-            // Подписываемся на события
-            dataGridView.CellPainting += DataGridView_CellPainting;
-            dataGridView.CellEndEdit += DataGridView_CellEndEdit;
-            dataGridView.CellClick += DataGridView_CellClick;
-            dataGridView.CellValueChanged += DataGridView_CellValueChanged;
         }
     }
     
-    
-
     public class StudentData
     {
         public string Name { get; set; }

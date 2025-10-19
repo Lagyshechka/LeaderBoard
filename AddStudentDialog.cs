@@ -108,6 +108,15 @@ namespace LeaderBoard
             {
                 MessageBox.Show("Please enter student name", "Validation Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                nameTextBox.Focus();
+                return;
+            }
+            
+            if (string.IsNullOrWhiteSpace(groupTextBox.Text))
+            {
+                MessageBox.Show("Please enter a group name", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                groupTextBox.Focus();
                 return;
             }
 
