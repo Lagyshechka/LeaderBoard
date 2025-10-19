@@ -13,23 +13,22 @@ namespace LeaderBoard
         private string dataFilePath;
         private const string PhantomStudentName = "+";
 
-        private Color PrimaryColor = Color.FromArgb(41, 128, 185);
-        private Color SecondaryColor = Color.FromArgb(52, 152, 219);
-        private Color AccentColor = Color.FromArgb(46, 204, 113);
-        private Color DangerColor = Color.FromArgb(231, 76, 60);
-        private Color DarkColor = Color.FromArgb(44, 62, 80);
-        private Color LightColor = Color.FromArgb(236, 240, 241);
+        private Color PrimaryColor = Color.FromArgb(0, 123, 255);
+        private Color SecondaryColor = Color.FromArgb(227, 242, 253);
+        private Color AccentColor = Color.FromArgb(40, 167, 69);
+        private Color DangerColor = Color.FromArgb(220, 53, 69);
+        private Color DarkColor = Color.FromArgb(52, 58, 64);
+        private Color LightColor = Color.FromArgb(248, 249, 250);
 
         private Color[] ProgressColors = new Color[]
         {
-            Color.FromArgb(231, 76, 60),
-            Color.FromArgb(230, 126, 34),
-            Color.FromArgb(241, 196, 15),
-            Color.FromArgb(46, 204, 113),
-            Color.FromArgb(52, 152, 219),
-            Color.FromArgb(155, 89, 182)
+            Color.FromArgb(220, 53, 69),    // Danger
+            Color.FromArgb(255, 193, 7),    // Warning
+            Color.FromArgb(40, 167, 69),    // Success
+            Color.FromArgb(0, 123, 255),    // Primary
+            Color.FromArgb(111, 66, 193)    // Indigo
         };
-
+        
         public Form1()
         {
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
@@ -55,11 +54,9 @@ namespace LeaderBoard
 
         private void ApplyModernStyling()
         {
-            this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = Color.White;
-            this.ForeColor = DarkColor;
             this.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            this.Size = new Size(1000, 600);
+            this.Size = new Size(1200, 700);
 
             var controls = new Control[] {
                 addButton, addGradeColumnButton, deleteButton, renameColumnsButton, deleteColumnButton,
@@ -74,7 +71,7 @@ namespace LeaderBoard
                 }
             }
 
-            var buttons = new[] { addButton, addGradeColumnButton, deleteButton, renameColumnsButton, deleteColumnButton };
+            var buttons = new[] { addGradeColumnButton, renameColumnsButton };
             foreach (var button in buttons)
             {
                 if (button != null)
@@ -83,152 +80,233 @@ namespace LeaderBoard
                     button.FlatAppearance.BorderSize = 0;
                     button.BackColor = PrimaryColor;
                     button.ForeColor = Color.White;
-                    button.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-                    button.Size = new Size(120, 32);
+                    button.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Regular, GraphicsUnit.Point);
+                    button.Size = new Size(140, 32);
                     button.Cursor = Cursors.Hand;
-                    button.UseVisualStyleBackColor = false;
+                    
+                    Color hoverColor = Color.FromArgb(0, 100, 220);
+                    Color originalColor = PrimaryColor;
+                    button.MouseEnter += (s, e) => { button.BackColor = hoverColor; };
+                    button.MouseLeave += (s, e) => { button.BackColor = originalColor; };
                 }
             }
-
+            
             if (addButton != null)
-                addButton.BackColor = AccentColor;
-            if (deleteButton != null)
-                deleteButton.BackColor = DangerColor;
-             if (deleteColumnButton != null)
-                deleteColumnButton.BackColor = DangerColor;
-
-            var textBoxes = new[] { nameTextBox, groupTextBox };
-            foreach (var textBox in textBoxes)
             {
-                if (textBox != null)
+                addButton.FlatStyle = FlatStyle.Flat;
+                addButton.FlatAppearance.BorderSize = 0;
+                addButton.BackColor = AccentColor;
+                addButton.ForeColor = Color.White;
+                addButton.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Regular, GraphicsUnit.Point);
+                addButton.Size = new Size(120, 32);
+                addButton.Cursor = Cursors.Hand;
+                Color hoverColor = Color.FromArgb(35, 140, 60);
+                addButton.MouseEnter += (s, e) => { addButton.BackColor = hoverColor; };
+                addButton.MouseLeave += (s, e) => { addButton.BackColor = AccentColor; };
+            }
+
+            var dangerButtons = new[] { deleteButton, deleteColumnButton };
+            foreach (var button in dangerButtons)
+            {
+                if (button != null)
                 {
-                    textBox.BorderStyle = BorderStyle.FixedSingle;
-                    textBox.BackColor = Color.White;
-                    textBox.ForeColor = DarkColor;
-                    textBox.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.FlatAppearance.BorderSize = 0;
+                    button.BackColor = DangerColor;
+                    button.ForeColor = Color.White;
+                    button.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Regular, GraphicsUnit.Point);
+                    button.Size = new Size(130, 32);
+                    button.Cursor = Cursors.Hand;
+                    Color hoverColor = Color.FromArgb(200, 45, 60);
+                    button.MouseEnter += (s, e) => { button.BackColor = hoverColor; };
+                    button.MouseLeave += (s, e) => { button.BackColor = DangerColor; };
                 }
             }
-
-            if (dataGridView != null)
-            {
-                dataGridView.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            }
-
+            
+            if (deleteButton != null) deleteButton.Text = "Delete Student";
+            
             this.Text = "🎓 Student Leaderboard";
         }
 
         private void SetupDataGridView()
         {
             dataGridView.Columns.Clear();
-
             dataGridView.Columns.Add("Name", "👤 Student Name");
             dataGridView.Columns.Add("Group", "🏫 Group");
-
             for (int i = 1; i <= 3; i++)
             {
                 dataGridView.Columns.Add($"Grade{i}", $"Grade {i}");
             }
-
             dataGridView.Columns.Add("Total", "📊 Total");
             dataGridView.Columns.Add("Progress", "📈 Progress");
             dataGridView.Columns.Add("Grade", "🎓 Grade");
-
             ApplyDataGridViewStyling();
         }
 
+        private void ApplyDataGridViewStyling()
+        {
+            dataGridView.BorderStyle = BorderStyle.None;
+            dataGridView.BackgroundColor = Color.White;
+            dataGridView.GridColor = Color.FromArgb(222, 226, 230);
+            
+            dataGridView.EnableHeadersVisualStyles = false;
+            dataGridView.ColumnHeadersDefaultCellStyle.BackColor = LightColor;
+            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = DarkColor;
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 10F);
+            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView.ColumnHeadersHeight = 60; // Увеличена высота заголовка
+            dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 10, 0);
+
+            dataGridView.DefaultCellStyle.BackColor = Color.White;
+            dataGridView.DefaultCellStyle.ForeColor = DarkColor;
+            dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+            dataGridView.DefaultCellStyle.SelectionBackColor = SecondaryColor;
+            dataGridView.DefaultCellStyle.SelectionForeColor = DarkColor;
+            dataGridView.RowTemplate.Height = 35;
+            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = LightColor;
+
+            dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToResizeRows = false;
+            dataGridView.RowHeadersVisible = false;
+            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView.MultiSelect = true;
+            
+            // Настройка ширины колонок
+            if (dataGridView.Columns["Name"] != null) dataGridView.Columns["Name"].Width = 280; // Увеличена ширина
+            if (dataGridView.Columns["Group"] != null) dataGridView.Columns["Group"].Width = 120;
+            if (dataGridView.Columns["Total"] != null) dataGridView.Columns["Total"].Width = 80;
+            if (dataGridView.Columns["Progress"] != null) dataGridView.Columns["Progress"].Width = 200;
+            if (dataGridView.Columns["Grade"] != null) dataGridView.Columns["Grade"].Width = 100;
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                if (column.Name.StartsWith("Grade") && column.Name != "Grade")
+                    column.Width = 80;
+            }
+        }
+
+        private (Color, Color) GetGradeColors(int score)
+        {
+            if (score <= 25) return (Color.FromArgb(253, 237, 238), Color.FromArgb(220, 53, 69)); 
+            if (score <= 50) return (Color.FromArgb(255, 243, 224), Color.FromArgb(255, 193, 7));
+            if (score <= 70) return (Color.FromArgb(232, 245, 233), Color.FromArgb(40, 167, 69));
+            if (score <= 89) return (Color.FromArgb(227, 242, 253), Color.FromArgb(0, 123, 255));
+            return (Color.FromArgb(243, 229, 245), Color.FromArgb(111, 66, 193));
+        }
+        
         private void DataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.ColumnIndex >= 0 && dataGridView.Columns[e.ColumnIndex].Name == "Progress" && e.RowIndex >= 0)
             {
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
-
                 var row = dataGridView.Rows[e.RowIndex];
 
                 if (row.Cells["Name"].Value?.ToString() == PhantomStudentName)
                 {
-                    e.Graphics.DrawString("-", e.CellStyle.Font, Brushes.Gray,
-                        e.CellBounds.X + 5, e.CellBounds.Y + (e.CellBounds.Height - 12) / 2);
+                    e.Graphics.DrawString("-", e.CellStyle.Font, Brushes.Gray, e.CellBounds.X + 5, e.CellBounds.Y + (e.CellBounds.Height - 12) / 2);
                     e.Handled = true;
                     return;
                 }
 
                 if (row.Cells["Total"].Value != null && int.TryParse(row.Cells["Total"].Value.ToString(), out int totalScore))
                 {
-                    int gradeColumnsCount = GetGradeColumnsCount();
                     int maxPossibleScore = 100;
 
-                    if (maxPossibleScore > 0)
+                    float percentage = (float)totalScore / maxPossibleScore;
+                    percentage = Math.Max(0, Math.Min(1, percentage));
+                    
+                    var progressColor = GetProgressColor(totalScore);
+
+                    var progressBounds = new Rectangle(e.CellBounds.X + 5, e.CellBounds.Y + 10, e.CellBounds.Width - 10, e.CellBounds.Height - 20);
+                    
+                    using(var path = new System.Drawing.Drawing2D.GraphicsPath())
                     {
-                        float percentage = (float)totalScore / maxPossibleScore;
-                        percentage = Math.Max(0, Math.Min(1, percentage));
+                        path.AddArc(progressBounds.X, progressBounds.Y, progressBounds.Height, progressBounds.Height, 90, 180);
+                        path.AddArc(progressBounds.Right - progressBounds.Height, progressBounds.Y, progressBounds.Height, progressBounds.Height, -90, 180);
+                        path.CloseFigure();
+                        e.Graphics.FillPath(new SolidBrush(LightColor), path);
+                    }
 
-                        var progressColor = GetProgressColor(percentage * 100);
-
-                        var progressBounds = new Rectangle(
-                            e.CellBounds.X + 5,
-                            e.CellBounds.Y + 8,
-                            e.CellBounds.Width - 10,
-                            e.CellBounds.Height - 16
-                        );
-
-                        e.Graphics.FillRectangle(Brushes.LightGray, progressBounds);
-
-                        var filledWidth = (int)(progressBounds.Width * percentage);
-                        if (filledWidth > 0)
+                    var filledWidth = (int)(progressBounds.Width * percentage);
+                    if (filledWidth > 0)
+                    {
+                         using(var path = new System.Drawing.Drawing2D.GraphicsPath())
                         {
-                            var filledBounds = new Rectangle(
-                                progressBounds.X,
-                                progressBounds.Y,
-                                filledWidth,
-                                progressBounds.Height
-                            );
-                            using (var brush = new SolidBrush(progressColor))
-                            {
-                                e.Graphics.FillRectangle(brush, filledBounds);
-                            }
+                            path.AddArc(progressBounds.X, progressBounds.Y, progressBounds.Height, progressBounds.Height, 90, 180);
+                            path.AddArc(progressBounds.X + filledWidth - progressBounds.Height, progressBounds.Y, progressBounds.Height, progressBounds.Height, -90, 180);
+                            path.CloseFigure();
+                            e.Graphics.FillPath(new SolidBrush(progressColor), path);
                         }
+                    }
 
-                        string progressText = $"{totalScore}/{maxPossibleScore} ({(percentage * 100):F0}%)";
-                        var textSize = e.Graphics.MeasureString(progressText, e.CellStyle.Font);
-                        var textLocation = new PointF(
-                            e.CellBounds.X + (e.CellBounds.Width - textSize.Width) / 2,
-                            e.CellBounds.Y + (e.CellBounds.Height - textSize.Height) / 2
-                        );
-
-                        var textColor = filledWidth > progressBounds.Width / 2 ? Brushes.White : Brushes.Black;
-                        e.Graphics.DrawString(progressText, e.CellStyle.Font, textColor, textLocation);
+                    string progressText = $"{totalScore}%";
+                    var textSize = e.Graphics.MeasureString(progressText, e.CellStyle.Font);
+                    var textLocation = new PointF(e.CellBounds.X + (e.CellBounds.Width - textSize.Width) / 2, e.CellBounds.Y + (e.CellBounds.Height - textSize.Height) / 2);
+                    using (var textBrush = new SolidBrush(DarkColor))
+                    {
+                        e.Graphics.DrawString(progressText, e.CellStyle.Font, textBrush, textLocation);
                     }
                 }
-
                 e.Handled = true;
             }
         }
-
+        
         private Color GetProgressColor(float percentage)
         {
             if (percentage <= 25) return ProgressColors[0];
             if (percentage <= 50) return ProgressColors[1];
-            if (percentage <= 60) return ProgressColors[2];
-            if (percentage <= 70) return ProgressColors[3];
-            if (percentage <= 80) return ProgressColors[4];
-            return ProgressColors[5];
+            if (percentage <= 70) return ProgressColors[2];
+            if (percentage <= 89) return ProgressColors[3];
+            return ProgressColors[4];
         }
 
         private string GetGradeBadge(int totalScore, int maxPossibleScore)
         {
             if (maxPossibleScore == 0) return "-";
-
             float percentage = (float)totalScore / maxPossibleScore * 100;
-
-            if (percentage <= 25) return "G 🔴";
-            if (percentage <= 50) return "F 🟠";
-            if (percentage <= 60) return "3/E 🟡";
-            if (percentage <= 70) return "3+/D 🟢";
-            if (percentage <= 80) return "4/C 🔵";
-            if (percentage <= 89) return "4+/B 🟣";
-            return "5/A 💜";
+            if (percentage <= 25) return "G";
+            if (percentage <= 50) return "F";
+            if (percentage <= 60) return "E";
+            if (percentage <= 70) return "D";
+            if (percentage <= 80) return "C";
+            if (percentage <= 89) return "B";
+            return "A";
         }
+        
+        private void RecalculateTotalForRow(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= dataGridView.Rows.Count) return;
 
+            DataGridViewRow currentRow = dataGridView.Rows[rowIndex];
+            if (currentRow.IsNewRow || currentRow.Cells["Name"].Value?.ToString() == PhantomStudentName) return;
+
+            int total = 0;
+            int gradeColumnsCount = GetGradeColumnsCount();
+
+            for (int i = 0; i < gradeColumnsCount; i++)
+            {
+                string columnName = $"Grade{i + 1}";
+                if (currentRow.Cells[columnName].Value != null && int.TryParse(currentRow.Cells[columnName].Value.ToString(), out int grade))
+                {
+                    total += grade;
+                }
+            }
+
+            total = Math.Max(0, Math.Min(100, total));
+
+            currentRow.Cells["Total"].Value = total;
+
+            var gradeCell = currentRow.Cells["Grade"];
+            gradeCell.Value = GetGradeBadge(total, 100);
+            
+            var (bgColor, fgColor) = GetGradeColors(total);
+            gradeCell.Style.BackColor = bgColor;
+            gradeCell.Style.ForeColor = fgColor;
+            gradeCell.Style.Font = new Font("Segoe UI Semibold", 9.5F);
+
+            dataGridView.InvalidateRow(rowIndex);
+        }
+        
         private int GetGradeColumnsCount()
         {
             int count = 0;
@@ -275,6 +353,7 @@ namespace LeaderBoard
                             }
 
                             existingRow.DefaultCellStyle = dataGridView.DefaultCellStyle;
+                            RecalculateTotalForRow(existingRow.Index);
                             break;
                         }
                     }
@@ -364,7 +443,7 @@ namespace LeaderBoard
                 }
             };
 
-            int insertIndex = dataGridView.Columns.Count - 3;
+            int insertIndex = dataGridView.Columns["Total"].Index;
             dataGridView.Columns.Insert(insertIndex, newColumn);
 
             foreach (DataGridViewRow gridRow in dataGridView.Rows)
@@ -434,34 +513,26 @@ namespace LeaderBoard
         private void ReindexGradeColumns()
         {
             int gradeIndex = 1;
-            foreach (DataGridViewColumn column in dataGridView.Columns)
+            var gradeColumns = dataGridView.Columns.Cast<DataGridViewColumn>()
+                .Where(c => c.Name.StartsWith("Grade") && c.Name != "Grade").ToList();
+
+            foreach (var column in gradeColumns)
             {
-                if (column.Name.StartsWith("Grade") && column.Name != "Grade")
+                string newName = $"Grade{gradeIndex}";
+                column.Name = newName;
+                if (column.HeaderText.StartsWith("Grade "))
                 {
-                    string newName = $"Grade{gradeIndex}";
-                    if (column.Name != newName)
-                    {
-                        if (column.HeaderText.StartsWith("Grade "))
-                        {
-                            column.HeaderText = $"Grade {gradeIndex}";
-                        }
-                        column.Name = newName;
-                    }
-                    gradeIndex++;
+                    column.HeaderText = $"Grade {gradeIndex}";
                 }
+                gradeIndex++;
             }
         }
 
         private string[] GetGradeColumnNames()
         {
-            int count = GetGradeColumnsCount();
-            string[] names = new string[count];
-            for (int i = 0; i < count; i++)
-            {
-                string columnName = $"Grade{i + 1}";
-                names[i] = dataGridView.Columns[columnName].HeaderText;
-            }
-            return names;
+            return dataGridView.Columns.Cast<DataGridViewColumn>()
+                .Where(c => c.Name.StartsWith("Grade") && c.Name != "Grade")
+                .Select(c => c.HeaderText).ToArray();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -481,44 +552,13 @@ namespace LeaderBoard
                             rowsToDelete.Add(selectedRow);
                         }
                     }
-
                     foreach (var row in rowsToDelete)
                     {
                         dataGridView.Rows.Remove(row);
                     }
-
                     SaveData();
                 }
             }
-        }
-
-        private void RecalculateTotalForRow(int rowIndex)
-        {
-            if (rowIndex < 0 || rowIndex >= dataGridView.Rows.Count) return;
-
-            DataGridViewRow currentRow = dataGridView.Rows[rowIndex];
-
-            if (currentRow.IsNewRow || currentRow.Cells["Name"].Value?.ToString() == PhantomStudentName) return;
-
-            int total = 0;
-            int gradeColumnsCount = GetGradeColumnsCount();
-
-            for (int i = 0; i < gradeColumnsCount; i++)
-            {
-                string columnName = $"Grade{i + 1}";
-                if (currentRow.Cells[columnName].Value != null &&
-                    int.TryParse(currentRow.Cells[columnName].Value.ToString(), out int grade))
-                {
-                    total += grade;
-                }
-            }
-
-            currentRow.Cells["Total"].Value = total;
-
-            int maxPossibleScore = 100;
-            currentRow.Cells["Grade"].Value = GetGradeBadge(total, maxPossibleScore);
-
-            dataGridView.InvalidateRow(rowIndex);
         }
 
         private void RecalculateAllTotals()
@@ -541,23 +581,18 @@ namespace LeaderBoard
 
             int rowIndex = dataGridView.Rows.Add();
             DataGridViewRow phantomRow = dataGridView.Rows[rowIndex];
-
             phantomRow.Cells["Name"].Value = PhantomStudentName;
-            phantomRow.Cells["Group"].Value = "";
-
-            int gradeColumnsCount = GetGradeColumnsCount();
-            for (int i = 0; i < gradeColumnsCount; i++)
+            
+            foreach (DataGridViewCell cell in phantomRow.Cells)
             {
-                phantomRow.Cells[$"Grade{i+1}"].Value = "";
+                if(cell.OwningColumn.Name != "Name")
+                    cell.Value = "";
             }
 
-            phantomRow.Cells["Total"].Value = "";
-            phantomRow.Cells["Grade"].Value = "";
-
             phantomRow.DefaultCellStyle.ForeColor = Color.Gray;
-            phantomRow.DefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            phantomRow.DefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
-            phantomRow.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 200, 200);
+            phantomRow.DefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+            phantomRow.DefaultCellStyle.BackColor = LightColor;
+            phantomRow.DefaultCellStyle.SelectionBackColor = Color.FromArgb(220, 220, 220);
             phantomRow.DefaultCellStyle.SelectionForeColor = Color.Gray;
         }
 
@@ -566,12 +601,13 @@ namespace LeaderBoard
             try
             {
                 var students = new List<StudentData>();
+                var gradeColumns = dataGridView.Columns.Cast<DataGridViewColumn>()
+                    .Where(c => c.Name.StartsWith("Grade") && c.Name != "Grade").ToList();
 
                 foreach (DataGridViewRow studentRow in dataGridView.Rows)
                 {
-                    if (studentRow.IsNewRow) continue;
-                    if (studentRow.Cells["Name"].Value?.ToString() == PhantomStudentName) continue;
-                    if (studentRow.Cells["Name"].Value == null) continue;
+                    if (studentRow.IsNewRow || studentRow.Cells["Name"].Value == null || studentRow.Cells["Name"].Value.ToString() == PhantomStudentName)
+                        continue;
 
                     var student = new StudentData
                     {
@@ -580,37 +616,24 @@ namespace LeaderBoard
                         Grades = new List<int>()
                     };
 
-                    int gradeColumnsCount = GetGradeColumnsCount();
-
-                    for (int i = 1; i <= gradeColumnsCount; i++)
+                    foreach (var col in gradeColumns)
                     {
-                        string columnName = $"Grade{i}";
-                        if (studentRow.Cells[columnName].Value != null &&
-                            int.TryParse(studentRow.Cells[columnName].Value.ToString(), out int grade))
-                        {
+                         if (studentRow.Cells[col.Name].Value != null && int.TryParse(studentRow.Cells[col.Name].Value.ToString(), out int grade))
+                         {
                             student.Grades.Add(grade);
-                        }
-                        else
-                        {
+                         }
+                         else
+                         {
                             student.Grades.Add(0);
-                        }
+                         }
                     }
-
                     students.Add(student);
-                }
-
-                var gradeColumnNames = new string[GetGradeColumnsCount()];
-                for (int i = 0; i < gradeColumnNames.Length; i++)
-                {
-                    string columnName = $"Grade{i + 1}";
-                    gradeColumnNames[i] = dataGridView.Columns[columnName].HeaderText;
                 }
 
                 var data = new SaveData
                 {
                     Students = students,
-                    GradeColumnsCount = GetGradeColumnsCount(),
-                    GradeColumnNames = gradeColumnNames
+                    GradeColumnNames = GetGradeColumnNames()
                 };
 
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
@@ -618,8 +641,7 @@ namespace LeaderBoard
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving data: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error saving data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -628,27 +650,23 @@ namespace LeaderBoard
             try
             {
                 if (!File.Exists(dataFilePath)) return;
-
                 string json = File.ReadAllText(dataFilePath);
                 if (string.IsNullOrWhiteSpace(json)) return;
                 
                 var data = JsonSerializer.Deserialize<SaveData>(json);
-
                 if (data == null) return;
 
-                dataGridView.Rows.Clear();
                 dataGridView.Columns.Clear();
+                dataGridView.Rows.Clear();
 
                 dataGridView.Columns.Add("Name", "👤 Student Name");
                 dataGridView.Columns.Add("Group", "🏫 Group");
 
                 if(data.GradeColumnNames != null)
                 {
-                    for (int i = 1; i <= data.GradeColumnNames.Length; i++)
+                    for (int i = 0; i < data.GradeColumnNames.Length; i++)
                     {
-                        string columnName = $"Grade{i}";
-                        string headerText = data.GradeColumnNames[i - 1];
-                        dataGridView.Columns.Add(columnName, headerText);
+                        dataGridView.Columns.Add($"Grade{i + 1}", data.GradeColumnNames[i]);
                     }
                 }
 
@@ -657,7 +675,7 @@ namespace LeaderBoard
                 dataGridView.Columns.Add("Grade", "🎓 Grade");
 
                 ApplyDataGridViewStyling();
-
+                
                 foreach (var student in data.Students)
                 {
                     int rowIndex = dataGridView.Rows.Add();
@@ -678,50 +696,7 @@ namespace LeaderBoard
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading data: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void ApplyDataGridViewStyling()
-        {
-            dataGridView.BorderStyle = BorderStyle.None;
-            dataGridView.BackgroundColor = LightColor;
-            dataGridView.GridColor = Color.FromArgb(200, 200, 200);
-
-            dataGridView.EnableHeadersVisualStyles = false;
-            dataGridView.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
-            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            dataGridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dataGridView.ColumnHeadersHeight = 35;
-
-            dataGridView.DefaultCellStyle.BackColor = Color.White;
-            dataGridView.DefaultCellStyle.ForeColor = DarkColor;
-            dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 9);
-            dataGridView.DefaultCellStyle.SelectionBackColor = SecondaryColor;
-            dataGridView.DefaultCellStyle.SelectionForeColor = Color.White;
-            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 248, 248);
-
-            dataGridView.AllowUserToAddRows = false;
-            dataGridView.AllowUserToResizeRows = false;
-            dataGridView.RowHeadersVisible = false;
-            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.MultiSelect = true;
-            
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (column.Name == "Name") column.Width = 180;
-                else if (column.Name == "Group") column.Width = 120;
-                else if (column.Name.StartsWith("Grade") && column.Name != "Grade") column.Width = 80;
-                else if (column.Name == "Total") column.Width = 80;
-                else if (column.Name == "Progress") column.Width = 200;
-                else if (column.Name == "Grade") column.Width = 100;
-
-                if (column.Name.StartsWith("Grade") || column.Name == "Total")
-                {
-                    column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
+                MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
@@ -736,7 +711,6 @@ namespace LeaderBoard
     public class SaveData
     {
         public List<StudentData> Students { get; set; }
-        public int GradeColumnsCount { get; set; }
         public string[] GradeColumnNames { get; set; }
     }
 }
