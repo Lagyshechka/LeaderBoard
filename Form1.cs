@@ -22,11 +22,11 @@ namespace LeaderBoard
 
         private Color[] ProgressColors = new Color[]
         {
-            Color.FromArgb(220, 53, 69),    // Danger
-            Color.FromArgb(255, 193, 7),    // Warning
-            Color.FromArgb(40, 167, 69),    // Success
-            Color.FromArgb(0, 123, 255),    // Primary
-            Color.FromArgb(111, 66, 193)    // Indigo
+            Color.FromArgb(220, 53, 69),  
+            Color.FromArgb(255, 193, 7),    
+            Color.FromArgb(40, 167, 69),   
+            Color.FromArgb(0, 123, 255),   
+            Color.FromArgb(111, 66, 193)   
         };
         
         public Form1()
